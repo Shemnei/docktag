@@ -12,6 +12,7 @@
 	- Group by `pre` and/or `build metadata`
 - [ ] [Other] Make container for checking with notification support
 	- Examples: [`diun`](https://crazymax.dev/diun) / [`watchtower`](https://github.com/containrrr/watchtower)
+- [ ] [Other] Support for personal access tokens (e.g. for private repositories)
 
 ## Non goals
 
