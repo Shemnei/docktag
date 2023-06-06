@@ -72,16 +72,23 @@ async fn tags_to_versions(tags: Vec<String>) -> Vec<(String, Version)> {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    const IMAGE: &str = "mcuadros/ofelia";
+    let image = std::env::args()
+        .skip(1)
+        .next()
+        .expect("Docker image name argument");
 
     tracing_subscriber::fmt().try_init().unwrap();
 
-    let image = prepare_image(IMAGE);
+    let image = prepare_image(&image);
 
     let auth = fetch_token(&image).await?;
     let tags = fetch_tags(&image, &auth.token).await?;
 
-    let mut versions = tags_to_versions(tags.tags).await;
+    let versions = tags_to_versions(tags.tags).await;
+    let mut versions = versions
+        .into_iter()
+        .filter(|(_, v)| v.pre.is_empty())
+        .collect::<Vec<_>>();
     versions.sort_by(|(_, a), (_, b)| b.cmp(a));
 
     for (tag, _) in versions.into_iter().take(3) {
